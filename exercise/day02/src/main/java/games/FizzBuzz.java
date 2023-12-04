@@ -1,27 +1,24 @@
 package games;
 
+import static games.integer.Factory.createFizzBuzzInteger;
+
 public class FizzBuzz {
+
+    private static final int MIN = 0;
+    private static final int MAX = 100;
+
     private FizzBuzz() {
     }
-    
+
     public static String convert(Integer input) throws OutOfRangeException {
-        if (input > 0) {
-            if (input <= 100) {
-                if (input % 3 == 0 && input % 5 == 0) {
-                    return "FizzBuzz";
-                }
-                if (input % 3 == 0) {
-                    return "Fizz";
-                }
-                if (input % 5 == 0) {
-                    return "Buzz";
-                }
-                return input.toString();
-            } else {
-                throw new OutOfRangeException();
-            }
-        } else {
+        if (isOutOfRange(input)) {
             throw new OutOfRangeException();
         }
+
+        return createFizzBuzzInteger(input).asString();
+    }
+
+    private static boolean isOutOfRange(Integer input) {
+        return input <= MIN || input > MAX;
     }
 }
