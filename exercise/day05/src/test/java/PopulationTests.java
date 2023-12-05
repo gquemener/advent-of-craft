@@ -59,31 +59,26 @@ class PopulationTests {
                 .stream()
                 .map((Person person) -> {
                     var response = new StringBuilder();
-                    appendFullName(response, person);
-                    appendPetNames(response, person);
+                    response.append(person.fullName());
+                    if (!person.pets().isEmpty()) {
+                        response
+                                .append(" who owns : ")
+                                .append(person
+                                        .pets()
+                                        .stream()
+                                        .map(Pet::name)
+                                        .collect(Collectors.joining(" ")))
+                                .append(" ")
+                        ;
+                    }
 
                     return response.toString();
                 })
                 .collect(Collectors.joining(lineSeparator()));
     }
 
-    private static void appendPetNames(StringBuilder response, Person person) {
-        if (!person.pets().isEmpty()) {
-            response
-                    .append(" who owns : ")
-                    .append(
-                        person
-                            .pets()
-                            .stream()
-                            .map(Pet::name)
-                            .collect(Collectors.joining(" ")))
-                    .append(" ")
-            ;
-        }
-    }
-
-    private static void appendFullName(StringBuilder response, Person person) {
-        response.append(format("%s %s", person.firstName(), person.lastName()));
+    private static String fullName(Person person) {
+        return format("%s %s", person.firstName(), person.lastName());
     }
 
     @Test
