@@ -6,6 +6,7 @@ import people.PetType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
@@ -53,25 +54,36 @@ class PopulationTests {
                         "Glenn Quagmire");
     }
 
-    private static StringBuilder formatPopulation() {
-        final var response = new StringBuilder();
+    private static String formatPopulation() {
+        return population
+                .stream()
+                .map((Person person) -> {
+                    var response = new StringBuilder();
+                    appendFullName(response, person);
+                    appendPetNames(response, person);
 
-        for (var person : population) {
-            response.append(format("%s %s", person.firstName(), person.lastName()));
+                    return response.toString();
+                })
+                .collect(Collectors.joining(lineSeparator()));
+    }
 
-            if (!person.pets().isEmpty()) {
-                response.append(" who owns : ");
-            }
-
-            for (var pet : person.pets()) {
-                response.append(pet.name()).append(" ");
-            }
-
-            if (!population.getLast().equals(person)) {
-                response.append(lineSeparator());
-            }
+    private static void appendPetNames(StringBuilder response, Person person) {
+        if (!person.pets().isEmpty()) {
+            response
+                    .append(" who owns : ")
+                    .append(
+                        person
+                            .pets()
+                            .stream()
+                            .map(Pet::name)
+                            .collect(Collectors.joining(" ")))
+                    .append(" ")
+            ;
         }
-        return response;
+    }
+
+    private static void appendFullName(StringBuilder response, Person person) {
+        response.append(format("%s %s", person.firstName(), person.lastName()));
     }
 
     @Test
@@ -80,7 +92,7 @@ class PopulationTests {
                 .min(comparingInt(PopulationTests::youngestPetAgeOfThePerson))
                 .orElse(null);
 
-        assert filtered != null;
+        assert filtered!=null;
         assertThat(filtered.firstName()).isEqualTo("Lois");
     }
 
