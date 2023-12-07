@@ -1,80 +1,69 @@
 package games;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FizzBuzzTests {
-    @Test
-    void returns_the_given_number_for_1() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(1))
-                .isEqualTo("1");
+    public static IntStream notMultipleOf3Nor5() {
+        return IntStream
+                .range(1, 100)
+                .filter((i) -> i % 3 != 0) // TODO: replace with partial application of a multipleOf function
+                .filter((i) -> i % 5 != 0);
     }
 
-    @Test
-    void returns_the_given_number_for_67() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(67))
-                .isEqualTo("67");
+    public static IntStream onlyMultiplesOf3() {
+        return IntStream
+                .range(1, 100)
+                .filter((i) -> i % 3 == 0) // TODO: replace with partial application of a multipleOf function
+                .filter((i) -> i % 5 != 0);
     }
 
-    @Test
-    void returns_the_given_number_for_82() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(82))
-                .isEqualTo("82");
+    public static IntStream onlyMultiplesOf5() {
+        return IntStream
+                .range(1, 100)
+                .filter((i) -> i % 5 == 0) // TODO: replace with partial application of a multipleOf function
+                .filter((i) -> i % 3 != 0);
     }
 
-    @Test
-    void returns_Fizz_for_3() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(3))
+    public static IntStream multipleOf3And5() {
+        return IntStream
+                .range(1, 100)
+                .filter((i) -> i % 5 == 0) // TODO: replace with partial application of a multipleOf function
+                .filter((i) -> i % 3 == 0);
+    }
+
+    @ParameterizedTest
+    @MethodSource("notMultipleOf3Nor5")
+    void returns_the_given_number_for_non_multiple_of_3_nor_5(Integer i) throws OutOfRangeException {
+        assertThat(FizzBuzz.convert(i))
+                .isEqualTo(String.valueOf(i));
+    }
+
+    @ParameterizedTest
+    @MethodSource("onlyMultiplesOf3")
+    void returns_Fizz_for_multiple_of_3(Integer i) throws OutOfRangeException {
+        assertThat(FizzBuzz.convert(i))
                 .isEqualTo("Fizz");
     }
 
-    @Test
-    void returns_Fizz_for_66() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(66))
-                .isEqualTo("Fizz");
-    }
-
-    @Test
-    void returns_Fizz_for_99() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(99))
-                .isEqualTo("Fizz");
-    }
-
-    @Test
-    void returns_Buzz_for_5() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(5))
+    @ParameterizedTest
+    @MethodSource("onlyMultiplesOf5")
+    void returns_Buzz_for_multiple_of_5(Integer i) throws OutOfRangeException {
+        assertThat(FizzBuzz.convert(i))
                 .isEqualTo("Buzz");
     }
 
-    @Test
-    void returns_Buzz_for_50() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(50))
-                .isEqualTo("Buzz");
-    }
-
-    @Test
-    void returns_Buzz_for_85() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(85))
-                .isEqualTo("Buzz");
-    }
-
-    @Test
-    void returns_FizzBuzz_for_15() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(15))
-                .isEqualTo("FizzBuzz");
-    }
-
-    @Test
-    void returns_FizzBuzz_for_30() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(30))
-                .isEqualTo("FizzBuzz");
-    }
-
-    @Test
-    void returns_FizzBuzz_for_45() throws OutOfRangeException {
-        assertThat(FizzBuzz.convert(45))
+    @ParameterizedTest
+    @MethodSource("multipleOf3And5")
+    void returns_FizzBuzz_for_multiple_of_3_and_5(Integer i) throws OutOfRangeException {
+        assertThat(FizzBuzz.convert(i))
                 .isEqualTo("FizzBuzz");
     }
 
